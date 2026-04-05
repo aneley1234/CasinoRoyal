@@ -84,11 +84,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (win) {
             state.fichas += 200;
             specialBall.classList.add('selected-win');
+
+            // Efecto de pantalla (Flash)
+            const flash = document.createElement('div');
+            flash.className = 'rare-win-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 2000);
+
             createParticles();
             resultMsg.innerHTML = `
                 <div class="jackpot-text">
-                    <div>🎉 JACKPOT 🎉</div>
-                    <div style="font-size: 1rem;">+200 FICHAS</div>
+                    <div class="rare-label">¡PREMIO RARO!</div>
+                    <div style="font-size: 1.1rem; color: #fff; letter-spacing: 2px;">+200 FICHAS</div>
                 </div>
             `;
         } else {
