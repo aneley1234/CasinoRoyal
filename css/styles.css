@@ -1,0 +1,311 @@
+/* 
+    CASINO ROYAL - MASTER STYLESHEET
+    Elegancia, Lujo y Azar
+*/
+
+:root {
+    --gold: #d4af37;
+    --gold-light: #f1d279;
+    --dark-red: #4a0000;
+    --blood-red: #8b0000;
+    --black: #050505;
+    --dark-grey: #121212;
+    --white-ivory: #fdfcf0;
+    --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white-ivory);
+    font-family: 'Playfair Display', serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Background Particles Animation */
+.bg-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at center, #1a0000 0%, #050505 100%);
+    overflow: hidden;
+}
+
+.bg-particles::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--gold);
+    box-shadow: 
+        10vw 20vh 2px var(--gold), 30vw 50vh 1px var(--gold), 80vw 10vh 3px var(--gold),
+        50vw 80vh 1px var(--gold), 20vw 90vh 2px var(--gold), 70vw 40vh 1px var(--gold),
+        90vw 70vh 2px var(--gold), 15vw 15vh 1px var(--gold), 45vw 25vh 3px var(--gold);
+    animation: particlesAnim 20s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes particlesAnim {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100vh); }
+}
+
+/* Header & Nav */
+header {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--white-ivory);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--gold);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Hero Section */
+#hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(rgba(5, 5, 5, 0.7), rgba(5, 5, 5, 0.7)), url('https://images.unsplash.com/photo-1596838132731-dd9d53c2710d?auto=format&fit=crop&q=80&w=2000');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    color: var(--gold);
+    letter-spacing: 15px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.glitter-text {
+    background: linear-gradient(45deg, var(--gold) 20%, var(--gold-light) 40%, var(--gold) 60%, var(--gold-light) 80%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+    to { background-position: 200% center; }
+}
+
+.subtitle {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 15px 40px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+    font-weight: 700;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: var(--gold);
+    color: var(--black);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+}
+
+/* Games Grid */
+#games {
+    padding: 100px 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: var(--gold);
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 20px auto;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.game-card {
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 4px;
+    padding: 40px 20px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+    cursor: pointer;
+}
+
+.game-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.game-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--gold);
+}
+
+.game-card p {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 25px;
+}
+
+.btn-play {
+    text-decoration: none;
+    color: var(--white-ivory);
+    font-size: 0.8rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 5px;
+    transition: var(--transition);
+}
+
+.btn-play:hover {
+    color: var(--gold);
+    letter-spacing: 3px;
+}
+
+/* Footer */
+footer {
+    background: #000;
+    padding: 80px 0 40px;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    text-align: center;
+}
+
+.footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+}
+
+.footer-content p {
+    color: #666;
+    margin-bottom: 40px;
+    font-style: italic;
+}
+
+.footer-bottom {
+    font-size: 0.8rem;
+    color: #444;
+    border-top: 1px solid #111;
+    padding-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-content h1 { font-size: 3.5rem; }
+}

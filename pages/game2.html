@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royal - Ruleta de Lujo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .game-container {
+            max-width: 1100px;
+            margin: 100px auto 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+            background: rgba(18, 18, 18, 0.95);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+        }
+
+        /* Sección del Mito */
+        .myth-section {
+            grid-column: span 2;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .myth-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .myth-box {
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .myth-explanation {
+            font-size: 0.95rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .advantage-tag {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border: 1px solid var(--gold);
+            padding: 5px 15px;
+        }
+
+        /* Ruleta Visual */
+        .roulette-box {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        #wheel-container {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            border: 15px solid #2a1a0a;
+            background: #000;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+        }
+
+        #wheel-svg {
+            width: 100%;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid var(--gold);
+            z-index: 100;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+
+        /* Betting Panel */
+        .betting-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .balance-box {
+            background: #000;
+            padding: 15px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        .balance-label { font-family: 'Cinzel', serif; font-size: 0.8rem; color: #888; }
+        .balance-value { font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold); display: block; }
+
+        .bet-selectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-bet {
+            padding: 15px;
+            border: 2px solid #333;
+            background: #111;
+            color: white;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .btn-bet.active { border-color: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.05); }
+        .btn-red { background: #8b0000; }
+        .btn-black { background: #000; }
+        .btn-green { background: #004d00; }
+
+        /* Amount Controls */
+        .amount-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            background: #0a0a0a;
+            padding: 10px;
+            border: 1px solid #222;
+        }
+
+        .btn-amount {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .btn-amount:hover { background: var(--gold); color: black; }
+        .current-amount { font-family: 'Cinzel', serif; font-size: 1.2rem; color: white; min-width: 50px; text-align: center; }
+
+        /* Results & History */
+        .result-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            display: none;
+            z-index: 200;
+            min-width: 250px;
+            border-radius: 4px;
+        }
+
+        #history {
+            height: 120px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border: 1px solid #222;
+            font-size: 0.85rem;
+            list-style: none;
+        }
+
+        .history-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #111;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .txt-win { color: #00ff00; }
+        .txt-lose { color: #ff4d4d; }
+
+        .conclusion {
+            grid-column: span 2;
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+        }
+
+        .conclusion-text {
+            color: #888;
+            font-size: 0.9rem;
+            max-width: 700px;
+            margin: 15px auto 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">CASINO ROYAL</div>
+            <ul class="nav-links">
+                <li><a href="menu.html">Volver al Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="game-container">
+            
+            <div class="myth-section">
+                <h2>¿Puedes ganarle al casino?</h2>
+                <div class="myth-box">"Si juegas suficiente tiempo, terminarás ganando."</div>
+                <p class="myth-explanation">
+                    Aunque a corto plazo puedes ganar, cada jugada tiene una probabilidad ligeramente desfavorable. 
+                    Con el tiempo, esas pequeñas desventajas se acumulan, haciendo que el jugador pierda en promedio.
+                </p>
+                <div class="advantage-tag">VENTAJA DE LA CASA: EL CASINO SIEMPRE TIENE MAYOR PROBABILIDAD A LARGO PLAZO</div>
+            </div>
+
+            <div class="roulette-box">
+                <div class="pointer"></div>
+                <div id="wheel-container"></div>
+                <div id="result-display" class="result-overlay">
+                    <h2 id="result-main" style="color: var(--gold); font-family: 'Cinzel', serif; margin-bottom: 10px;">-</h2>
+                    <p id="result-status" style="font-size: 1.2rem;"></p>
+                </div>
+            </div>
+
+            <div class="betting-panel">
+                <div class="balance-box">
+                    <span class="balance-label">MIS FICHAS</span>
+                    <span id="balance" class="balance-value">100</span>
+                </div>
+
+                <div class="bet-selectors">
+                    <button id="bet-rojo" class="btn-bet btn-red">ROJO</button>
+                    <button id="bet-verde" class="btn-bet btn-green">VERDE</button>
+                    <button id="bet-negro" class="btn-bet btn-black">NEGRO</button>
+                </div>
+
+                <div class="amount-controls">
+                    <button id="btn-minus" class="btn-amount">-</button>
+                    <span id="bet-amount-display" class="current-amount">10</span>
+                    <button id="btn-plus" class="btn-amount">+</button>
+                </div>
+
+                <button id="spin-btn" class="btn-primary" style="width: 100%; height: 60px;">GIRAR RULETA (10)</button>
+
+                <ul id="history">
+                    <li style="color: #555; text-align: center; margin-top: 30px;">Historial de jugadas</li>
+                </ul>
+            </div>
+
+            <div class="conclusion">
+                <p id="final-stats" style="font-family: 'Cinzel', serif; color: var(--gold);">Dinero Inicial: 100 | Dinero Final: 100</p>
+                <p class="conclusion-text">
+                    Este juego demuestra que, aunque puedes ganar en algunas rondas, la probabilidad favorece al casino. 
+                    Mientras más juegas, más probable es perder dinero.
+                </p>
+                <h3 style="color: var(--gold); margin-top: 15px; font-family: 'Cinzel', serif;">"La casa siempre tiene ventaja"</h3>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/games/game2.js"></script>
+</body>
+</html>
+

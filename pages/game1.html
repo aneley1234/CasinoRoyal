@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royal - La falacia del jugador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* Estilos específicos para la moneda 3D */
+        .game-container {
+            max-width: 800px;
+            margin: 120px auto 50px;
+            padding: 40px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .myth-explanation {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 20px;
+        }
+
+        .myth-explanation h2 {
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 15px;
+        }
+
+        .coin-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            perspective: 1000px;
+            margin: 50px 0;
+        }
+
+        /* Moneda 3D */
+        #coin {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            transform-style: preserve-3d;
+            transition: transform 3s cubic-bezier(0.3, 1, 0.4, 1);
+        }
+
+        #coin div {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border: 5px solid var(--gold-light);
+        }
+
+        .heads {
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            color: var(--black);
+            z-index: 2;
+        }
+
+        .tails {
+            background: linear-gradient(45deg, #b8860b, var(--gold));
+            color: var(--black);
+            transform: rotateY(180deg);
+        }
+
+        /* Animaciones de rotación */
+        .animate-heads { animation: flipHeads 3s forwards; }
+        .animate-tails { animation: flipTails 3s forwards; }
+
+        @keyframes flipHeads {
+            from { transform: rotateY(0); }
+            to { transform: rotateY(1800deg); }
+        }
+
+        @keyframes flipTails {
+            from { transform: rotateY(0); }
+            to { transform: rotateY(1980deg); }
+        }
+
+        /* Controles */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .selection-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-select {
+            padding: 10px 30px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--white-ivory);
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: var(--transition);
+        }
+
+        .btn-select.active {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .action-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .stat-card {
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 2rem;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+        }
+
+        .history-box {
+            margin-top: 30px;
+            max-height: 100px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #222;
+            font-size: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .history-item {
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .h-cara { color: var(--gold); border: 1px solid var(--gold); }
+        .h-cruz { color: #fff; border: 1px solid #444; }
+
+        #message-display {
+            text-align: center;
+            height: 40px;
+            margin-top: 20px;
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-style: italic;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .conclusion {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(139, 0, 0, 0.1);
+            border-left: 4px solid var(--gold);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">CASINO ROYAL</div>
+            <ul class="nav-links">
+                <li><a href="menu.html">Volver al Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="game-container">
+            <div class="myth-explanation">
+                <h2>El Mito del Jugador</h2>
+                <p><i>"Si la moneda ha salido cara 5 veces seguidas, la próxima vez seguramente será cruz."</i></p>
+                <p>En este simulador, demostraremos por qué cada lanzamiento es independiente.</p>
+            </div>
+
+            <div class="coin-box">
+                <div id="coin">
+                    <div class="heads">CARA</div>
+                    <div class="tails">CRUZ</div>
+                </div>
+            </div>
+
+            <div id="message-display"></div>
+
+            <div class="controls">
+                <p>Elige tu bando:</p>
+                <div class="selection-group">
+                    <button id="select-heads" class="btn-select active">CARA</button>
+                    <button id="select-tails" class="btn-select">CRUZ</button>
+                </div>
+
+                <div class="action-group">
+                    <button id="btn-flip-1" class="btn-primary">LANZAR (1x)</button>
+                    <button id="btn-flip-20" class="btn-primary">LANZAR (20x)</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Caras</span>
+                    <span id="count-heads" class="stat-value">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Cruces</span>
+                    <span id="count-tails" class="stat-value">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Tus Aciertos</span>
+                    <span id="user-hits" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div id="history" class="history-box">
+                <!-- Historial dinámico -->
+            </div>
+
+            <div id="conclusion" class="conclusion">
+                <h3 style="color: var(--gold); margin-bottom: 10px;">Conclusión</h3>
+                <p>Como has podido observar, incluso tras rachas largas, la probabilidad de cada nuevo lanzamiento sigue siendo exactamente del <strong>50/50</strong>. La moneda no tiene memoria.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/games/game1.js"></script>
+</body>
+</html>
+

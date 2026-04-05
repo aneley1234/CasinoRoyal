@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royal - ¿Qué número saldrá?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        body { overflow-x: hidden; }
+        header { position: relative !important; z-index: 1000 !important; }
+        main { margin-top: 100px; position: relative; z-index: 1; }
+        .bg-particles { position: absolute; height: auto; z-index: -1; }
+        
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto 50px;
+            padding: 40px;
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(0,0,0,1);
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .myth-section { grid-column: span 2; text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 20px; margin-bottom: 20px; }
+        .myth-section h2 { font-family: 'Cinzel', serif; color: var(--gold); margin: 0; }
+
+        /* Selector de Números */
+        .number-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .btn-number {
+            aspect-ratio: 1/1;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .btn-number:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-number.selected { background: var(--gold); color: black; border-color: white; transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
+
+        /* Visor de Resultado */
+        .result-viewer {
+            background: #050505;
+            border: 1px solid #222;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        #current-result {
+            font-size: 5rem;
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Gráfica de Frecuencias */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            padding: 20px 10px;
+            background: #000;
+            border: 1px solid #111;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: var(--gold);
+            min-height: 2px;
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.7;
+        }
+
+        .chart-label { font-size: 0.6rem; color: #555; margin-top: 5px; font-family: 'Cinzel', serif; }
+
+        /* Sidebar Stats */
+        .stats-panel { display: flex; flex-direction: column; gap: 20px; }
+        .balance-box { background: #000; padding: 20px; border: 1px solid var(--gold); text-align: center; }
+        .balance-box .val { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2rem; display: block; }
+
+        .history-list {
+            height: 250px;
+            overflow-y: auto;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 15px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .history-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #111; }
+        .hit { color: #00ff00; font-weight: bold; }
+
+        @media (max-width: 900px) { .game-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">CASINO ROYAL</div>
+            <ul class="nav-links">
+                <li><a href="menu.html">Volver al Menú</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="game-container">
+            <header class="myth-header myth-section">
+                <h2>¿Qué número saldrá?</h2>
+                <p>"Si el 7 ha salido poco, es momento de que aparezca."</p>
+            </header>
+
+            <div class="main-play-area">
+                <p style="text-align: center; color: #888; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 2px;">ELICE TU PREDICCIÓN (1 AL 10)</p>
+                <div class="number-selector">
+                    <button class="btn-number" data-num="1">1</button>
+                    <button class="btn-number" data-num="2">2</button>
+                    <button class="btn-number" data-num="3">3</button>
+                    <button class="btn-number" data-num="4">4</button>
+                    <button class="btn-number" data-num="5">5</button>
+                    <button class="btn-number" data-num="6">6</button>
+                    <button class="btn-number" data-num="7">7</button>
+                    <button class="btn-number" data-num="8">8</button>
+                    <button class="btn-number" data-num="9">9</button>
+                    <button class="btn-number" data-num="10">10</button>
+                </div>
+
+                <div class="result-viewer">
+                    <div id="current-result">?</div>
+                    <p id="feedback-msg" style="height: 20px; font-size: 0.9rem; color: var(--gold);"></p>
+                </div>
+
+                <div class="chart-container" id="freq-chart">
+                    <!-- Barras de gráfica generadas por JS -->
+                </div>
+                <p style="text-align: center; font-size: 0.6rem; color: #444; margin-top: 10px;">HISTORIAL DE FRECUENCIAS ACUMULADAS</p>
+            </div>
+
+            <div class="stats-panel">
+                <div class="balance-box">
+                    <span style="font-size: 0.7rem; color: #888; font-family: 'Cinzel';">TUS FICHAS</span>
+                    <span id="balance" class="val">1000</span>
+                </div>
+
+                <button id="btn-play" class="btn-primary" style="width: 100%; height: 60px;">JUGAR (10)</button>
+
+                <div class="history-list" id="history">
+                    <p style="text-align: center; margin-top: 100px; color: #333;">Esperando jugada...</p>
+                </div>
+            </div>
+
+            <div class="conclusion" style="grid-column: span 2; text-align: center; padding-top: 30px; border-top: 1px solid #222;">
+                <h3 style="color: var(--gold); font-family: 'Cinzel';">"No existen patrones reales"</h3>
+                <p style="color: #777; font-size: 0.9rem; max-width: 800px; margin: 10px auto;">
+                    Aunque la gráfica muestre que un número ha salido más que otros, la probabilidad de cada tiro sigue siendo exactamente del <strong>10%</strong>. El azar no equilibra las cuentas; los patrones que vemos son solo ilusiones de nuestro cerebro.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/games/game7.js"></script>
+</body>
+</html>

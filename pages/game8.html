@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royal - La Ilusión de la Precisión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        body { overflow-x: hidden; }
+        header { position: relative !important; z-index: 1000 !important; }
+        main { margin-top: 100px; position: relative; z-index: 1; }
+        .bg-particles { position: absolute; height: auto; z-index: -1; }
+        
+        .game-container {
+            max-width: 1100px;
+            margin: 0 auto 50px;
+            padding: 40px;
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(0,0,0,1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .myth-header { text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 20px; width: 100%; }
+        .myth-header h2 { font-family: 'Cinzel', serif; color: var(--gold); margin: 0; font-size: 2.2rem; }
+        .myth-header p { font-style: italic; color: #888; margin-top: 10px; }
+
+        /* Modern Casino Machine Layout */
+        .machine-body {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 40px;
+            width: 100%;
+            background: #111;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        /* Left Side: Reels */
+        .slot-machine {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
+            padding: 40px;
+            border-radius: 15px;
+            border: 3px solid #444;
+            position: relative;
+        }
+
+        .reels-container {
+            display: flex;
+            gap: 15px;
+            background: #000;
+            padding: 20px;
+            border: 8px solid #222;
+            border-radius: 10px;
+            box-shadow: inset 0 0 30px #000;
+        }
+
+        .reel {
+            width: 140px;
+            height: 200px;
+            background: #fdfcf0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            user-select: none;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* Status Display (LOSE style) */
+        .status-display {
+            width: auto;
+            min-width: 250px;
+            height: 50px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.4s;
+            background: rgba(0,0,0,0.8);
+            letter-spacing: 2px;
+            padding: 0 20px;
+            margin-top: 10px;
+            opacity: 0;
+        }
+
+        .status-display:not(:empty) { opacity: 1; }
+
+        .status-lose {
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            background: rgba(255, 77, 77, 0.15);
+            animation: shake 0.5s ease-in-out;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .status-near { color: #ffaa00; text-shadow: 0 0 10px #ffaa00; }
+        .status-win { display: none !important; } /* Hidden because overlay handles it */
+
+        /* WIN OVERLAY */
+        .win-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .win-overlay.active { display: flex; }
+
+        .win-content {
+            text-align: center;
+            animation: jackpotZoom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .win-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            color: var(--gold);
+            text-shadow: 0 0 30px var(--gold), 0 0 60px var(--gold);
+            margin: 0;
+            letter-spacing: 15px;
+        }
+
+        .win-content .prize-amount {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: #fff;
+            margin-top: 20px;
+            display: block;
+            animation: pulseText 1.5s infinite;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes jackpotZoom { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulseText { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+        /* Symbol Specific Animations (Machine) */
+        .win-7 .slot-machine { animation: vibrate 0.1s linear infinite; }
+        @keyframes vibrate { 0% { transform: translate(0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 75% { transform: translate(2px, -2px); } 100% { transform: translate(-2px, 2px); } }
+
+        /* Right Side: Controls */
+        .controls-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(212, 175, 55, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* Controls UI */
+        .balance-display {
+            background: #000;
+            padding: 20px;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .balance-display span { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; }
+        .cost-tag { font-size: 0.9rem; color: #666; letter-spacing: 2px; margin-top: 5px; }
+
+        .btn-spin {
+            width: 100%;
+            height: 100px;
+            font-size: 2.2rem;
+            cursor: pointer;
+            background: linear-gradient(180deg, #d4af37 0%, #8b6b00 100%);
+            border: none;
+            color: black;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            border-radius: 12px;
+            box-shadow: 0 6px 0 #554400, 0 10px 20px rgba(0,0,0,0.5);
+            transition: all 0.1s;
+        }
+
+        .btn-spin:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #554400, 0 5px 10px rgba(0,0,0,0.5); }
+        .btn-spin:hover:not(:disabled) { filter: brightness(1.1); }
+        .btn-spin:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; transform: none; box-shadow: 0 2px 0 #333; }
+
+        /* Conclusion Section */
+        .conclusion-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #222;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .conclusion-panel h3 { color: var(--gold); font-family: 'Cinzel', serif; margin-bottom: 15px; text-align: center; }
+        .conclusion-panel ul { list-style: none; padding: 0; }
+        .conclusion-panel li { margin-bottom: 10px; color: #aaa; font-size: 0.95rem; position: relative; padding-left: 25px; }
+        .conclusion-panel li::before { content: '•'; color: var(--gold); position: absolute; left: 0; font-size: 1.5rem; line-height: 1; }
+        
+        .conclusion-footer {
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .machine-body { flex-direction: column; }
+            .reel { width: 100px; height: 150px; font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">CASINO ROYAL</div>
+            <ul class="nav-links">
+                <li><a href="menu.html">Volver al Menú</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="game-container">
+            <header class="myth-header">
+                <h2>La Ilusión de la Precisión</h2>
+                <p>“Si casi ganas, significa que estás cerca de ganar.”</p>
+            </header>
+
+            <div class="machine-body">
+                <div class="slot-machine" id="machine-container">
+                    <div class="reels-container">
+                        <div class="reel" id="reel-1">7️⃣</div>
+                        <div class="reel" id="reel-2">⭐</div>
+                        <div class="reel" id="reel-3">💎</div>
+                    </div>
+                    <!-- Status message below reels -->
+                    <div class="status-display" id="status-text"></div>
+                </div>
+
+                <div class="controls-panel">
+                    <div class="balance-display">
+                        <span id="balance">1000</span>
+                        <div class="cost-tag">FICHAS DISPONIBLES</div>
+                    </div>
+
+                    <button id="btn-spin" class="btn-spin">GIRAR</button>
+                    <div class="cost-tag">COSTO: 10 FICHAS</div>
+                </div>
+            </div>
+
+            <div class="conclusion-panel">
+                <h3>¿Por qué es una ilusión?</h3>
+                <ul>
+                    <li><strong>Independencia:</strong> Cada giro es generado por un algoritmo que no tiene "memoria". Lo que pasó antes no afecta lo que pasará después.</li>
+                    <li><strong>Near Miss:</strong> Ver dos símbolos iguales y uno diferente es una trampa visual. Matemáticamente, tiene la misma probabilidad que cualquier otra combinación perdedora.</li>
+                    <li><strong>Pareidolia del Azar:</strong> El cerebro humano está programado para buscar patrones, incluso donde solo hay caos aleatorio.</li>
+                </ul>
+                <div class="conclusion-footer">
+                    “Estar cerca de ganar no aumenta la probabilidad de ganar.”
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="win-overlay" class="win-overlay">
+        <div class="win-content">
+            <h2>¡GANASTE!</h2>
+            <span class="prize-amount" id="overlay-prize">+0</span>
+        </div>
+    </div>
+
+    <script src="../js/games/game8.js"></script>
+</body>
+</html>

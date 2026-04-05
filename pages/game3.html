@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Royal - La carta que nunca sale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .game-container {
+            max-width: 1100px;
+            margin: 100px auto 50px;
+            padding: 40px;
+            background: rgba(18, 18, 18, 0.95);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .myth-section {
+            grid-column: span 2;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .myth-section h2 { font-family: 'Cinzel', serif; color: var(--gold); }
+        
+        /* Tablero de Selección */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: #fff;
+            border-radius: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .card.selected {
+            outline: 4px solid var(--gold);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            pointer-events: none;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        .card-front {
+            background: #fdfcf0;
+            color: #000;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #2a1a0a 0%, #000 100%);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-back::after {
+            content: 'CR';
+            color: var(--gold);
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .suit-red { color: var(--blood-red); }
+        .suit-black { color: #000; }
+
+        /* Dealers Zone */
+        .dealer-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        #draw-card-slot {
+            width: 120px;
+            height: 180px;
+            border: 2px dashed #444;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #111;
+            font-size: 0.85rem;
+        }
+
+        .cold-card { color: #00d4ff; font-weight: bold; } /* Azul para cartas "frías" */
+        .hot-card { color: #ff4d4d; }
+
+        .balance-display {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid var(--gold);
+        }
+
+        .history-box {
+            height: 150px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 20px;
+            padding: 10px;
+            background: #000;
+        }
+
+        /* Animación de robo */
+        .anim-draw {
+            animation: cardDraw 0.6s ease-out forwards;
+        }
+
+        @keyframes cardDraw {
+            0% { transform: translateY(200px) rotateY(180deg) scale(0.5); opacity: 0; }
+            100% { transform: translateY(0) rotateY(0deg) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">CASINO ROYAL</div>
+            <ul class="nav-links">
+                <li><a href="menu.html">Volver al Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="game-container">
+            <div class="myth-section">
+                <h2>La carta que nunca sale</h2>
+                <p class="subtitle">"Si una carta no ha salido en mucho tiempo, ¡está a punto de aparecer!"</p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">En un mazo con reposición, cada robo es independiente. El azar no tiene memoria.</p>
+            </div>
+
+            <div class="selection-area">
+                <p style="text-align: center; margin-bottom: 20px; letter-spacing: 2px;">ELIGE TU CARTA DE LA SUERTE</p>
+                <div id="selection-grid" class="selection-grid">
+                    <!-- 20 cartas generadas por JS -->
+                </div>
+
+                <div class="action-group" style="display: flex; gap: 20px;">
+                    <button id="btn-draw-1" class="btn-primary" style="flex: 1;">ROBAR 1 CARTA</button>
+                    <button id="btn-draw-20" class="btn-primary" style="flex: 1;">ROBAR 20 VECES (AUTO)</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="balance-display">
+                    <span id="balance">1000</span> <small style="font-size: 0.6rem;">FICHAS</small>
+                </div>
+
+                <div class="dealer-zone">
+                    <div id="draw-card-slot">
+                        <!-- Carta robada aquí -->
+                    </div>
+                    <p id="result-text" style="font-family: 'Cinzel'; color: var(--gold); text-align: center; height: 20px;"></p>
+                </div>
+
+                <div class="stats-panel">
+                    <p style="font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; letter-spacing: 1px;">FRECUENCIA DE APARICIÓN</p>
+                    <div id="frequency-list">
+                        <!-- Stats generados por JS -->
+                    </div>
+                </div>
+
+                <div id="history" class="history-box">
+                    <p style="text-align: center; color: #444;">Historial de aciertos...</p>
+                </div>
+            </div>
+
+            <div class="conclusion" style="grid-column: span 2; text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #333;">
+                <h3 style="color: var(--gold); font-family: 'Cinzel';">"No existe memoria en eventos aleatorios"</h3>
+                <p style="color: #888; margin-top: 10px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                    Aunque veas una carta marcada como "Fría" (azul), su probabilidad de salir sigue siendo exactamente de 1 entre 20 (5%). 
+                    Cambiar tu apuesta basándote en lo que NO ha salido es caer en la trampa del azar.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/games/game3.js"></script>
+</body>
+</html>
+
