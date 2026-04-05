@@ -98,13 +98,50 @@
         }
 
         .selected-win {
-            transform: scale(1.4) !important;
+            transform: scale(1.6) !important;
             background: #fff !important;
             box-shadow: 
-                0 0 25px rgba(255,255,255,1),
-                0 0 50px rgba(212,175,55,1),
-                0 0 80px rgba(212,175,55,0.8) !important;
-            z-index: 100 !important;
+                0 0 30px rgba(255,255,255,1),
+                0 0 60px rgba(212,175,55,1),
+                0 0 100px rgba(212,175,55,0.9) !important;
+            z-index: 1000 !important;
+            animation: rare-pulse 1s infinite ease-in-out;
+            border: 2px solid #fff !important;
+        }
+
+        @keyframes rare-pulse {
+            0% { transform: scale(1.6); box-shadow: 0 0 30px #fff, 0 0 60px var(--gold); }
+            50% { transform: scale(1.8); box-shadow: 0 0 60px #fff, 0 0 120px var(--gold), 0 0 180px var(--gold); }
+            100% { transform: scale(1.6); box-shadow: 0 0 30px #fff, 0 0 60px var(--gold); }
+        }
+
+        .rare-win-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 215, 0, 0.2);
+            pointer-events: none;
+            z-index: 9999;
+            animation: flash-anim 1.5s ease-out forwards;
+        }
+
+        @keyframes flash-anim {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .rare-label {
+            font-size: 2.2rem;
+            background: linear-gradient(to bottom, #fff 20%, var(--gold) 50%, #8a6d3b 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(212,175,55,0.8));
+            letter-spacing: 4px;
+            font-weight: 900;
+            margin-bottom: 5px;
         }
 
         /* TEXTO JACKPOT */
